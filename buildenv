@@ -208,7 +208,22 @@ zopen_bazel_install() {
 
 # Custom compile step for Bazel (Zip Bomb Fix)
 zopen_bazel_make() {
-    # If zopen trapped us in the .bazelci subfolder, step out to the real root
+###echo "==== BEFORE compile.sh ====="
+export PATH=/data/zopen/usr/local/altbin:/data/zopen/usr/local/bin:$PATH
+export BAZEL_JAVAC_OPTS="-processor com.google.auto.value.processor.AutoValueProcessor"
+hash -r
+#export BAZEL_JAVAC_OPTS="-XprintProcessorInfo -XprintRounds"
+export EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk"
+##echo "PATH=$PATH"
+##which grep
+##type grep
+##grep --version
+##echo "PATH=$PATH"
+##which grep
+##type grep
+##grep --version || true
+
+#echo "============================="    # If zopen trapped us in the .bazelci subfolder, step out to the real root
     if [ ! -f "compile.sh" ] && [ -f "../compile.sh" ]; then
         cd ..
     fi
