@@ -210,7 +210,10 @@ zopen_bazel_install() {
 zopen_bazel_make() {
 ###echo "==== BEFORE compile.sh ====="
 export PATH=/data/zopen/usr/local/altbin:/data/zopen/usr/local/bin:$PATH
-export BAZEL_JAVAC_OPTS="-processor com.google.auto.value.processor.AutoValueProcessor,com.google.auto.value.processor.AutoOneOfProcessor"
+export BAZEL_JAVAC_OPTS="-processor \
+com.google.auto.value.processor.AutoValueProcessor,\
+com.google.auto.value.processor.AutoOneOfProcessor,\
+com.google.auto.service.processor.AutoServiceProcessor"
 hash -r
 
 export EXTRA_BAZEL_ARGS="\
