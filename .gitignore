@@ -1,8 +1,3 @@
-log/
-log.DEV/
-log.STABLE/
-build/
-install/
-derived/
-python_pkg/*.tar.gz
-python_pkg/python/
+/log/
+/log.DEV/
+/log.STABLE/
