@@ -420,6 +420,7 @@ function get_cwd() {
 }
 
 function run_bazel_jar() {
+	set -x
   local command=$1
   shift
   local client_env=()
@@ -462,4 +463,5 @@ function run_bazel_jar() {
       "${client_env[@]}" \
       --client_cwd="$(get_cwd)" \
       "${@}"
+  set +x
 }
