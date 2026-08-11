@@ -1,1 +1,30 @@
-{‰•ƒ“¤„…@L¢£„‰–Kˆn{‰•ƒ“¤„…@L¢£„“‰‚Kˆn{‰•ƒ“¤„…@L¢£™‰•‡Kˆn{—™‡”@ƒ–•¥…™£MÉÂÔ`ñğô÷]ƒˆ™@mm©–—…•m‰„…•£‰†‰…™­½@~@[É„z@å…•„–™z©ÖâmÖ—…•mã––“¢@Â¤‰“„Ù…¥zÈÅÁÄ@òğòö`ğ÷`ğò@ğğzğôzğò@ÃÄã@[^{—™‡”@ƒ–•¥…™£M—–—]{„…†‰•…@×ÙÖÑÅÃãmÙÖÖãmâãÙ@×ÙÖÑÅÃãmÙÖÖãmm££™‰‚¤£…mmMM¥‰¢‰‚‰“‰£¨M„…†¤“£]]]@‰•£@©–¢“‰‚m…•¥mˆ––’Mƒˆ™\]@mm££™‰‚¤£…mmMM¤¢…„]]^mm££™‰‚¤£…mmMM¥‰¢‰‚‰“‰£¨M„…†¤“£]]]@‰•£@©–¢“‰‚m…•¥mˆ––’Mƒˆ™\@™––£m„‰™]@Àƒˆ™\@…•¥™m¥“¤…^ƒˆ™\@¥“¤…m¢£™^ƒˆ™\@—–¢^“–•‡@¢‰©…^aa@Á¥–‰„@¢…££‰•‡@…•¥‰™–•”…•£@¥™‰‚“…¢@„¤™‰•‡@‚¤‰“„@£‰”…@‚…ƒ¤¢…@£ˆ…¨@„–@•–£@ˆ–“„@ƒ–™™…ƒ£@¥“¤…¢aa@•„@¢ˆ–¤“„@–•“¨@‚…@¤¢…„@†™–”@£ˆ…@‰•¢£““…„@“–ƒ£‰–•Kaa@ã–@¥–‰„@¢…££‰•‡@…•¥‰™–•”…•£@¥™‰‚“…¢@„¤™‰•‡@‚¤‰“„@£‰”…k@¦…@•……„@£–@‡¤™„@‰£aa@‚¨@ƒˆ…ƒ’‰•‡@‰†@éÖ×ÅÕmÉÕméÖ×ÅÕmÂäÉÓÄ@‰¢@¢…£@£–@£ˆ…@ƒ¤™™…•£@‚¤‰“„@—™–ƒ…¢¢@¢…££‰•‡Kaa@Â¤£@£ˆ‰¢@“¢–@”…•£@£ˆ£@•¨@„…—…•„…•£@£––“¢@£ˆ£@¢…£@…•¥™¢@¥‰@©–¢“‰‚@…•¥@ˆ––’¢@¦–¤“„@¥–‰„@¢…££‰•‡@£ˆ–¢…@…•¥‰™–•”…•£@¥™‰‚“…¢k@…††…ƒ£‰¥…“¨@‚™…’‰•‡@£ˆ…”K‰†@MM…•¥™m¥“¤…@~@‡…£…•¥MéÖ×ÅÕmÉÕméÖ×ÅÕmÂäÉÓÄ]]@PP@@@@¢£™ƒ”—M…•¥™m¥“¤…k@ÄÅåäâÅÙKøóùõñ÷ñòKñöóñø]@~~@ğ]@À@@™…£¤™•@ğ^Ğ™…£¤™•@ğ^Ğ
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#pragma convert("IBM-1047")
+char __zopen_identifier[] = "$Id: Vendor:zOS_Open_Tools BuildRev:6596c33 2026-07-28 09:45:11 CDT $";
+#pragma convert(pop)
+
+#define PROJECT_ROOT_STR "PROJECT_ROOT"
+
+__attribute__((visibility("default"))) int zoslib_env_hook(char*) __attribute__((used));
+
+__attribute__((visibility("default"))) int zoslib_env_hook(char* root_dir) {
+char* envar_value;
+char* value_str;
+char* pos;
+long size;
+
+// Avoid setting environment variables during build time because they do not hold correct values
+// and should only be used from the installed location.
+// To avoid setting environment variables during build time, we need to guard it
+// by checking if ZOPEN_IN_ZOPEN_BUILD is set to the current build process setting.
+// But this also meant that any dependent tools that set envars via zoslib env hooks would avoid setting those environment variables, effectively breaking them.
+if ((envar_value = getenv("ZOPEN_IN_ZOPEN_BUILD")) &&
+    strcmp(envar_value, "DEVUSER.83952175.8625") == 0) {
+  return 0;
+}
+
+return 0;
+}
