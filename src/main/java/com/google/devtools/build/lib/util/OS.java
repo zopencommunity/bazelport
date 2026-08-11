@@ -24,10 +24,9 @@ public enum OS {
   OPENBSD("openbsd", "OpenBSD"),
   LINUX("linux", "Linux"),
   WINDOWS("windows", "Windows"),
-  ZOS("zos", "z/OS"),
   UNKNOWN("unknown", "");
 
-  private static final EnumSet<OS> POSIX_COMPATIBLE = EnumSet.of(DARWIN, FREEBSD, OPENBSD, LINUX,ZOS);
+  private static final EnumSet<OS> POSIX_COMPATIBLE = EnumSet.of(DARWIN, FREEBSD, OPENBSD, LINUX);
 
   private final String canonicalName;
   private final String detectionName;
@@ -77,11 +76,7 @@ public enum OS {
 
     for (OS os : OS.values()) {
       // Windows have many names, all starting with "Windows".
-      if (osName.startsWith(os.detectionName)) 
-      {
-	       System.err.println(
-            "DEBUG: Matched operating system: " + os +
-            " (os.name=" + osName + ")");
+      if (osName.startsWith(os.detectionName)) {
         return os;
       }
     }

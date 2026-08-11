@@ -36,8 +36,7 @@ def _uniq(iterable):
     return unique_elements.keys()
 
 def _generate_system_module_map(repository_ctx, dirs, script_path):
-    bash = repository_ctx.which("bash")
-    return execute(repository_ctx, [bash,script_path] + dirs)
+    return execute(repository_ctx, [script_path] + dirs)
 
 def _prepare_include_path(repo_ctx, path):
     """Resolve include path before outputting it into the crosstool.

@@ -40,7 +40,6 @@ public final class JniLoader {
       switch (OS.getCurrent()) {
         case LINUX:
         case FREEBSD:
-	case ZOS:
         case OPENBSD:
         case UNKNOWN:
           loadLibrary("main/native/libunix_jni.so");
