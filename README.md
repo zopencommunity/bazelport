@@ -1,58 +1,48 @@
-# [Bazel](https://bazel.build)
+## Building Bazel on z/OS
 
-*{Fast, Correct} - Choose two*
+### 1. Clone the repository
 
-Build and test software of any size, quickly and reliably.
+```bash
+git clone https://github.com/RohiniShankari/bazelport.git
+cd bazelport
+```
 
-* **Speed up your builds and tests**:
-  Bazel rebuilds only what is necessary.
-  With advanced local and distributed caching, optimized dependency analysis and
-  parallel execution, you get fast and incremental builds.
+### 2. Tag binary files for z/OS
 
-* **One tool, multiple languages**: Build and test Java, C++, Android, iOS, Go,
-  and a wide variety of other language platforms. Bazel runs on Windows, macOS,
-  and Linux.
+```bash
+find . \( \
+    -name "*.jar" -o \
+    -name "*.zip" -o \
+    -name "*.war" -o \
+    -name "*.ear" -o \
+    -name "*.class" -o \
+    -name "*.so" -o \
+    -name "*.a" -o \
+    -name "*.o" -o \
+    -name "*.dll" -o \
+    -name "*.exe" -o \
+    -name "*.png" -o \
+    -name "*.jpg" -o \
+    -name "*.jpeg" -o \
+    -name "*.gif" -o \
+    -name "*.ico" -o \
+    -name "*.pdf" \
+\) -exec chtag -b {} \;
+```
 
-* **Scalable**: Bazel helps you scale your organization, codebase, and
-  continuous integration solution. It handles codebases of any size, in multiple
-  repositories or a huge monorepo.
+### 3. Configure required toolchains
 
-* **Extensible to your needs**: Easily add support for new languages and
-  platforms with Bazel's familiar extension language. Share and re-use language
-  rules written by the growing Bazel community.
+```bash
+export ZOS_PYTHON_TARBALL=/data/rohini/python_pkg/python-3.14.4.1-s390x-ibm-zos.tar.gz
 
-## Getting Started
+export ZOS_GO_SDK=/data/rohini/gopackages/HAMF1Q0.nonsmpe.pax.Z
 
-  * [Install Bazel](https://bazel.build/install)
-  * [Get started with Bazel](https://bazel.build/start)
-  * Follow our tutorials:
+export JAVA_HOME=/data/java_21/J21.0_64
+export PATH=$JAVA_HOME/bin:$PATH
+```
 
-    - [Build C++](https://bazel.build/tutorials/cpp)
-    - [Build Java](https://bazel.build/tutorials/java)
-    - [Android](https://bazel.build/tutorials/android-app)
-    - [iOS](https://bazel.build/tutorials/ios-app)
+### 4. Build
 
-## Documentation
-
-  * [Bazel command line](https://bazel.build/docs/user-manual)
-  * [Rule reference](https://bazel.build/reference/be/overview)
-  * [Use the query command](https://bazel.build/reference/query)
-  * [Extend Bazel](https://bazel.build/rules/concepts)
-  * [Write tests](https://bazel.build/reference/test-encyclopedia)
-  * [Roadmap](https://bazel.build/community/roadmaps)
-  * [Who is using Bazel?](https://bazel.build/community/users)
-
-## Reporting a Vulnerability
-
-To report a security issue, please email security@bazel.build with a description
-of the issue, the steps you took to create the issue, affected versions, and, if
-known, mitigations for the issue. Our vulnerability management team will respond
-within 3 working days of your email. If the issue is confirmed as a
-vulnerability, we will open a Security Advisory. This project follows a 90 day
-disclosure timeline.
-
-## Contributing to Bazel
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-[![Build status](https://badge.buildkite.com/1fd282f8ad98c3fb10758a821e5313576356709dd7d11e9618.svg?status=master)](https://buildkite.com/bazel/bazel-bazel)
+```bash
+zopen build -vv
+```
