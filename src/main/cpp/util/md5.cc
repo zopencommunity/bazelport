@@ -43,6 +43,15 @@
 #include <string.h>  // for memcpy
 
 #include <cinttypes>
+#include <stdint.h>
+
+#if defined(__MVS__) || defined(__s390x__)
+// z/OS is big-endian and doesn't define htole32.
+// MD5 requires little-endian words.
+#ifndef htole32
+#define htole32(x) __builtin_bswap32((uint32_t)(x))
+#endif
+#endif
 
 #if !_STRING_ARCH_unaligned
 #if defined(_LP64) || defined(_WIN64)

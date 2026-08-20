@@ -73,6 +73,19 @@ bazel_dep(name = "rules_go", version = "0.39.1")
 bazel_dep(name = "rules_kotlin", version = "1.9.0")
 bazel_dep(name = "upb", version = "0.0.0-20220923-a547704")
 
+local_path_override(
+    module_name = "rules_python",
+    path = "rules_python",
+
+)
+local_path_override(
+    module_name = "platforms",
+    path = "platforms",
+)
+local_path_override(
+    module_name = "rules_go",
+    path = "rules_go",
+)
 # =========================================
 # Java dependencies
 # =========================================
@@ -254,6 +267,7 @@ use_repo(
     "remotejdk21_macos_aarch64",
     "remotejdk21_win",
 )
+register_toolchains("@local_jdk//:runtime_toolchain_definition")
 
 # =========================================
 # Python dependencies
@@ -352,7 +366,7 @@ use_repo(remote_coverage_tools_extension, "remote_coverage_tools")
 # =========================================
 # Register platforms & toolchains
 # =========================================
-
+#register_toolchains("@local_jdk//:all")
 register_execution_platforms("//:default_host_platform")
 
 register_toolchains("@bazel_tools//tools/python:autodetecting_toolchain")

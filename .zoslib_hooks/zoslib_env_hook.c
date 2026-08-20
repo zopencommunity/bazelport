@@ -3,7 +3,7 @@
 #include <string.h>
 
 #pragma convert("IBM-1047")
-char __zopen_identifier[] = "$Id: Vendor:zOS_Open_Tools BuildRev:6596c33 2026-07-28 09:45:11 CDT $";
+char __zopen_identifier[] = "$Id: Vendor:zOS_Open_Tools BuildRev:772021a 2026-08-20 00:53:35 CDT $";
 #pragma convert(pop)
 
 #define PROJECT_ROOT_STR "PROJECT_ROOT"
@@ -22,7 +22,7 @@ long size;
 // by checking if ZOPEN_IN_ZOPEN_BUILD is set to the current build process setting.
 // But this also meant that any dependent tools that set envars via zoslib env hooks would avoid setting those environment variables, effectively breaking them.
 if ((envar_value = getenv("ZOPEN_IN_ZOPEN_BUILD")) &&
-    strcmp(envar_value, "DEVUSER.83952175.8625") == 0) {
+    strcmp(envar_value, "DEVUSER.16842804.7029") == 0) {
   return 0;
 }
 

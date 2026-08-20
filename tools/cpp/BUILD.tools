@@ -25,6 +25,9 @@ toolchain_type(name = "test_runner_toolchain_type")
 # It is frequently necessary to constrain platforms based on the cc compiler type.
 constraint_setting(name = "cc_compiler")
 
+exports_files([
+    "clang_zos_wrapper.sh",
+])
 constraint_value(
     name = "clang",
     constraint_setting = ":cc_compiler",

@@ -35,6 +35,29 @@
 #include "src/main/cpp/util/path_platform.h"
 #include "src/main/cpp/util/strings.h"
 
+
+#ifdef __MVS__
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
+
+static char* mkdtemp_zos(char* templ) {
+  int fd = mkstemp(templ);
+  if (fd == -1) {
+    return nullptr;
+  }
+
+  close(fd);
+  unlink(templ);
+
+  if (mkdir(templ, 0700) != 0) {
+    return nullptr;
+  }
+
+  return templ;
+}
+#endif
+
 namespace blaze_util {
 
 using std::string;
@@ -135,14 +158,26 @@ string CreateTempDir(const std::string &prefix) {
         << blaze_util::GetLastErrorString();
   }
 
-  std::string result(prefix + "XXXXXX");
+  //std::string result(prefix + "XXXXXX");
+  //if (mkdtemp(&result[0]) == nullptr) {
+  //  std::string err = GetLastErrorString();
+  //  BAZEL_DIE(blaze_exit_code::LOCAL_ENVIRONMENTAL_ERROR)
+ //       << "could not create temporary directory under " << parent
+ //       << " to extract install base into (" << err << ")";
+ // }
+ 
+ std::string result(prefix + "XXXXXX");
+
+#ifdef __MVS__
+  if (mkdtemp_zos(&result[0]) == nullptr) {
+#else
   if (mkdtemp(&result[0]) == nullptr) {
+#endif
     std::string err = GetLastErrorString();
     BAZEL_DIE(blaze_exit_code::LOCAL_ENVIRONMENTAL_ERROR)
         << "could not create temporary directory under " << parent
         << " to extract install base into (" << err << ")";
   }
-
   // There's no better way to get the current umask than to set and reset it.
   const mode_t um = umask(0);
   umask(um);

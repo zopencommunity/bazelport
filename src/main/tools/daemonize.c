@@ -38,7 +38,6 @@
 #include <sys/types.h>
 
 #include <assert.h>
-#include <err.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
@@ -48,7 +47,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+// IBM z/OS <getopt.h> does not declare getopt(), so provide the
+// prototype explicitly to avoid implicit declaration warnings.
+#if defined(__MVS__)
+extern int getopt(int argc, char *const argv[], const char *optstring);
 
+extern char *optarg;
+extern int optind;
+extern int optopt;
+#endif
+
+#if defined(__MVS__)
+#include <stdarg.h>
+#include <string.h>
+__attribute__((noreturn))
+static void err(int eval, const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+
+  vfprintf(stderr, fmt, ap);
+  fprintf(stderr, ": %s\n", strerror(errno));
+
+  va_end(ap);
+  exit(eval);
+}
+__attribute__((noreturn))
+static void errx(int eval, const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+
+  vfprintf(stderr, fmt, ap);
+  fprintf(stderr, "\n");
+
+  va_end(ap);
+  exit(eval);
+}
+
+#else
+#include <err.h>
+#endif
 // Configures std{in,out,err} of the current process to serve as a daemon.
 //
 // stdin is configured to read from /dev/null.

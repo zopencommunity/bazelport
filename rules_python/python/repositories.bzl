@@ -153,9 +153,9 @@ def _python_repository_impl(rctx):
         if local_tar:
             urls = ["file://" + local_tar]
         else:
-            urls = tool["url"]
+            urls = rctx.attr.urls or [rctx.attr.url]
     else:
-        urls = tool["url"]
+        urls = rctx.attr.urls or [rctx.attr.url]
     auth = _get_auth(rctx, urls)
 
     if release_filename.endswith(".zst"):
@@ -181,7 +181,7 @@ def _python_repository_impl(rctx):
                 quiet = True,
                 working_directory = working_directory,
             )
-	    print("Extracting zst archive:", release_filename)
+            print("Extracting zst archive:", release_filename)
             if make_result.return_code:
                 fail_msg = (
                     "Failed to compile 'zstd' from source for use in Python interpreter extraction. " +

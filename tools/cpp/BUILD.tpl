@@ -21,7 +21,9 @@ load("@rules_cc//cc:defs.bzl", "cc_toolchain", "cc_toolchain_suite")
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])  # Apache 2.0
-
+exports_files([
+    "clang_zos_wrapper.sh",
+])
 cc_library(name = "empty_lib")
 
 # Label flag for extra libraries to be linked into every binary.
@@ -58,7 +60,6 @@ filegroup(
     name = "compiler_deps",
     srcs = glob(["extra_tools/**"], allow_empty = True) + [%{cc_compiler_deps}],
 )
-
 # This is the entry point for --crosstool_top.  Toolchains are found
 # by lopping off the name of --crosstool_top and searching for
 # the "${CPU}" entry in the toolchains attribute.

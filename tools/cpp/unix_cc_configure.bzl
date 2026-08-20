@@ -36,7 +36,8 @@ def _uniq(iterable):
     return unique_elements.keys()
 
 def _generate_system_module_map(repository_ctx, dirs, script_path):
-    return execute(repository_ctx, [script_path] + dirs)
+    bash = repository_ctx.which("bash")
+    return execute(repository_ctx, [bash,script_path] + dirs)
 
 def _prepare_include_path(repo_ctx, path):
     """Resolve include path before outputting it into the crosstool.
@@ -330,6 +331,7 @@ def configure_unix_toolchain(repository_ctx, cpu_value, overriden_tools):
         "@bazel_tools//tools/cpp:unix_cc_toolchain_config.bzl",
         "@bazel_tools//tools/cpp:linux_cc_wrapper.sh.tpl",
         "@bazel_tools//tools/cpp:osx_cc_wrapper.sh.tpl",
+        "@bazel_tools//tools/cpp:clang_zos_wrapper.sh", 
     ])
 
     repository_ctx.symlink(
@@ -391,6 +393,8 @@ def configure_unix_toolchain(repository_ctx, cpu_value, overriden_tools):
     # The parse_header tool needs to be a wrapper around the compiler as it has
     # to touch the output file.
     tool_paths["parse_headers"] = "cc_wrapper.sh"
+    if repository_ctx.os.name.lower().startswith("z/os"):
+        tool_paths["gcc"] = "clang_zos_wrapper.sh"
     cc_toolchain_identifier = escape_string(get_env_var(
         repository_ctx,
         "CC_TOOLCHAIN_NAME",
@@ -408,8 +412,24 @@ def configure_unix_toolchain(repository_ctx, cpu_value, overriden_tools):
             "%{cc}": escape_string(str(cc)),
             "%{env}": escape_string(get_env(repository_ctx)),
         },
+    
     )
-
+    repository_ctx.symlink(
+        paths["@bazel_tools//tools/cpp:clang_zos_wrapper.sh"],
+        "clang_zos_wrapper.sh",
+    )
+    if repository_ctx.os.name.lower().startswith("z/os"):
+        repository_ctx.execute([
+            "chmod",
+            "+x",
+            "clang_zos_wrapper.sh",
+        ])
+        repository_ctx.execute([
+            "chtag",
+            "-tc",
+            "ISO8859-1",
+            "clang_zos_wrapper.sh",
+        ])
     conly_opts = split_escaped(get_env_var(
         repository_ctx,
         "BAZEL_CONLYOPTS",
@@ -553,6 +573,7 @@ def configure_unix_toolchain(repository_ctx, cpu_value, overriden_tools):
             "%{cc_compiler_deps}": get_starlark_list([
                 ":builtin_include_directory_paths",
                 ":cc_wrapper",
+               
             ]),
             "%{compiler}": escape_string(get_env_var(
                 repository_ctx,

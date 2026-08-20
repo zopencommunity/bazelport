@@ -63,7 +63,14 @@ display "."
 log "Building output/bazel"
 # We set host and target platform directly because we are building for the local
 # host.
+export AR="$(pwd)/tools/cpp/ar_zos_wrapper.sh" 
 bazel_build "src:bazel_nojdk${EXE_EXT}" \
+  -s \
+  --action_env=AR=$AR \
+  --java_runtime_version=local_jdk \
+  --tool_java_runtime_version=local_jdk \
+  --sandbox_debug \
+  --verbose_failures \
   --action_env=PATH \
   --host_platform=@platforms//host \
   --platforms=@platforms//host \
