@@ -18,7 +18,13 @@ extern int setenv(const char *, const char *, int);
 int main(int argc, char **argv) {
   const char *home = getenv("PYTHON_HOME");
   if (home == NULL || home[0] == '\0') {
-    home = "/home/haritha/bazelDepTools/python";
+#ifdef PYTHON_HOME_DEFAULT
+    /* baked in at provisioning time from the PYTHON_HOME resolved by
+     * buildenv (avoids hardcoding any machine's path in the source) */
+    home = PYTHON_HOME_DEFAULT;
+#else
+    home = "/usr/lpp/IBM/cyp"; /* last resort; override with PYTHON_HOME */
+#endif
   }
   char libpath[4096];
   const char *old = getenv("LIBPATH");

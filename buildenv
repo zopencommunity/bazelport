@@ -625,8 +625,15 @@ zopen_provision_local_repos() {
     # --- 8. python3 wrapper (LIBPATH-setting program object) ----------------
     _w="${_repos}/python_wrapper"
     mkdir -p "${_w}"
+    if [ ! -s "${_files}/python_wrapper/python3_wrapper.c" ]; then
+        echo "ERROR: deps/files/python_wrapper/python3_wrapper.c is empty or corrupt (git checkout damage? re-checkout the file)" >&2
+        return 1
+    fi
     cp "${_files}/python_wrapper/python3_wrapper.c" "${_w}/python3_wrapper.c"
+    # Bake the provisioning-time PYTHON_HOME in as the wrapper's fallback
+    # (the source has no machine-specific default of its own).
     /bin/env _CEE_RUNOPTS='POSIX(ON)' "${_ccbin}" -D_ALL_SOURCE=1 -fzos-le-char-mode=ascii \
+        -DPYTHON_HOME_DEFAULT="\"${PYTHON_HOME}\"" \
         -O2 "${_w}/python3_wrapper.c" -o "${_w}/python3" || {
         echo "ERROR: failed to compile python3 wrapper" >&2; return 1; }
 
